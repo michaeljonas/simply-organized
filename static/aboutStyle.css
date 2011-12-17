@@ -1,0 +1,13 @@
+.topmargin		{ margin: 0em auto;margin-top: 9em; width: 35em; border: 5px solid #ccc;
+                  padding: 0.8em; background: #F2FAFC;}
+body           { background: #FFFFF6 }
+.page			{ font-family: 'Georgia'; color:black;margin: 0em auto; margin-top: 0em; 
+					width: 35em; border: 5px solid #ccc;padding: 0.8em; background: #F2FAFC;}
+h1				{ margin:0em; }
+h2				{ background:#D8ECFF; color:#0D4C0D; width: 23.3em; }
+h3				{ margin-left: 1.5em; }
+p3				{ margin-left:	10em; margin-bottom:0em; margin-top:0em;}
+p1				{ margin-left: 1.5em; width: 35em; word-wrap: word-break; }
+
+.aboutButn		{ display:inline; float: right; margin-right: -102px}
+.mainButn		{ display:inline; float: right; margin-right: 55px;}

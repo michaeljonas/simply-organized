@@ -1,0 +1,15 @@
+application: simply-organized
+version: 1
+api_version: 1
+runtime: python
+
+handlers:
+- url: /static
+  static_dir: static
+- url: /css
+  static_dir: css
+- url: /images
+  static_dir: images
+- url: /.*
+  script: main.py
+  login: required

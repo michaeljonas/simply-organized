@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<link type="text/css" href="css/cupertino/jquery-ui-1.8.14.custom.css" rel="stylesheet" />	
+<link rel=stylesheet type="text/css" href="/static/desktopStyle.css"/>
+	<script src="http://jqueryui.com/ui/jquery.ui.core.js"></script> 
+	<script src="http://jqueryui.com/ui/jquery.ui.datepicker.js"></script>
+	<script type="text/javascript">
+	function enterDate()
+	{
+		var today = new Date();
+		var slash = "/";
+		var year = new Number (today.getFullYear());
+		var month = new Number (today.getMonth()+1);
+		var day = new Number (today.getDate());
+		year += '';
+		month += '';
+		day +='';
+		month +=slash+day+slash+year;
+		if (document.dateform.raw_date.value==''){
+			document.dateform.raw_date.value=month;
+		}
+	}
+	$(document).ready(function(){
+    	$("#past").click(function () {
+    		$(".pastEntries").slideToggle("medium");
+    	});
+    	$("#quickRef").click(function () {
+    		$(".formatEntries").slideToggle("medium");
+    	});
+		$( "#dateHidden" ).datepicker({
+			altField: "input#raw_date",
+			showOn: "button",
+			buttonImage: "images/blue/calendar20x20.png",
+			buttonImageOnly: true,
+			showOtherMonths: true,
+			selectOtherMonths: true
+		});
+		$("p").click(function () {
+			var strike = $(this).css("text-decoration");
+			var key = $(this).attr("title");
+			var data = "entryKey="+key;
+			if(strike == "line-through"){
+				$.post("/", data, function(){
+					$("#entry"+key).css({'text-decoration':'none', 'margin-left':'25px'});
+					$("#todo"+key).css({'text-decoration':'none', 'margin-left':'25px'});
+					$("#delBtn"+key).css("display", "none");
+					$("#todoDelBtn"+key).css("display", "none");
+					});
+				}
+			else{
+				$.post("/", data, function(){
+					$("#entry"+key).css({'text-decoration':'line-through', 'margin-left':'0px'});
+					$("#todo"+key).css({'text-decoration':'line-through', 'margin-left':'0px'});
+					$("#delBtn"+key).css("display", "inline");
+					$("#todoDelBtn"+key).css("display", "inline");
+					});
+				}
+		});
+		$(".delBtn").click(function () {
+			var key = $(this).attr("title");			
+			var data = "deleteKey="+key;
+			$.post("/", data, function(){
+				$("#entry"+key).remove();
+				$("#delBtn"+key).remove();
+				$("#br"+key).remove();
+				$("#todo"+key).remove();
+				$("#todoDelBtn"+key).remove();
+				$("#todoBR"+key).remove();
+				});
+		});
+	});
+</script>
+</head>
+<title>Simply-Organized</title>
+<body>
+<div class=topMenu>
+	<form action="about.html" method="get" accept-charset="utf-8">
+		<input type="image" src="images/blue/info20x20.png" alt="submit" name="about" value="About" class=aboutButn></form>
+	<form action="\" method="get" accept-charset="utf-8">
+		<input type="image" src="images/blue/home20x20.png" alt="submit" name="main" value="Home" class=mainButn ></form>
+	<img src="images/blue/back20x20.png" id="past" class=pastButn />
+	<img src="images/blue/help20x20.png" id="quickRef" class=quickRefButn />
+		<h1>Simply-Organized</h1>
+<div class="entryFields" >
+	<form action="" method="post" accept-charset="utf-8" name="dateform">
+		<input type="text" name="raw_date" size=10 id="raw_date" placeholder="Date" class="dateEntry">
+		<input type="hidden" id="dateHidden">
+		<input type="text" name="raw_entry" size=50 id="raw_entry" placeHolder="Time & Entry">
+		<input type="image" src="images/blue/Add20x20.png" alt="submit" name="add" value="add" onclick="enterDate()" class="addButn">
+		</form>
+</div>
+<div class="formatEntries" >
+<pre>
+<b>DATE:</b>
+  Monday	m or nm or 5m	m for this monday.
+  Tuesday	t or nt or 5t	nm for monday of next week.
+  Wednesday	w or nw or 5w	5m for the next five mondays 
+  Thursday	r or nr or 5r	(the 5 can be changed to any number).
+  Friday	f or nf or 5f	M/D or MM/DD
+  Saturday	s or ns or 5s	M/D/YY or MM/DD/YY
+  Sunday	u or nu or 5u	MM/DD/YYYY
+<b>TIME:</b>
+  H		am or pm can be added or it will be assumed between 
+  HH		8am and 7:59pm. Times must be seperated from the 
+  H:MM		entry with a space.
+  HH:MM
+<b>Entry:</b>
+  Multiple entries may be entered in the same line by seperating them 
+  with a semicolon(;).
+</pre>
+</div>
+
+{% if errorMsg != " " %}
+	<div class="ERROR">
+	{{ errorMsg }}
+	</div>
+{% endif %}
+</div>
+<div class=topmargin>
+<div class="pastEntries">
+{% set lastEntry_date = None %}
+{% for entry in past %}
+	{% if lastEntry_date != entry.entry_date %}
+		<h2>{{ entry.dotw }} &nbsp; {{ entry.print_date }}</h2>
+		<hr>
+	{% endif %}
+	{% if entry.struck == False %}
+		{% if entry.milTime == 0 %}
+			<div class="delBtn" style="display:none;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="buttons">{{entry.text}}</p>
+		{% else %}
+			<div class="delBtn" style="display:none;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="buttons">{{entry.print_time}} &nbsp; {{entry.text}}</p>
+		{% endif %}
+	{% else %}
+		{% if entry.milTime == 0 %}
+			<div class="delBtn" style="display:inline;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="strikeButn" style="">{{entry.text}}</p>
+		{% else %}
+			<div class="delBtn" style="display:inline;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="strikeButn" style="">{{entry.print_time}} &nbsp; {{entry.text}}</p>
+		{% endif %}
+	{% endif %}
+	<div id="br{{entry.key}}"></div>
+	{% set lastEntry_date = entry.entry_date %}
+{% endfor %}
+</div>
+{% set lastEntry_date = None %}
+{% for entry in today %}
+	{% if lastEntry_date != entry.entry_date %}
+		<h2><div class=today>Today:</div> {{ entry.dotw }} &nbsp; {{ entry.print_date }}</h2>
+		<hr>
+	{% endif %}
+	{% if entry.struck == False %}
+		<div class="delBtn" style="display:none;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+		<p id="entry{{entry.key}}" title="{{entry.key}}" class="buttons">{{entry.print_time}} &nbsp; {{entry.text}}</p>
+	{% else %}
+		<div class="delBtn" style="display:inline;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+		<p id="entry{{entry.key}}" title="{{entry.key}}" class="strikeButn" style="">{{entry.print_time}} &nbsp; {{entry.text}}</p>
+	{% endif %}
+	<div id="br{{entry.key}}"></div>
+	{% set lastEntry_date = entry.entry_date %}
+{% endfor %}
+
+<h2><div class=today>Todo:</div></h2>
+<hr>
+{% for entry in todo %}
+	{% if entry.struck == False %}
+		<div class="delBtn" style="display:none;" title="{{ entry.key }}" id="todoDelBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+		<p id="todo{{entry.key}}" title="{{entry.key}}" class="buttons">{{entry.text}}</p>
+	{% else %}
+		<div class="delBtn" style="display:inline;" title="{{ entry.key }}" id="todoDelBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+		<p id="todo{{entry.key}}" title="{{entry.key}}" class="strikeButn" style="">{{entry.text}}</p>
+	{% endif %}
+	<div id="todoBR{{entry.key}}"></div>
+{% endfor %}
+
+{% set lastEntry_date = None %}
+{% for entry in future %}
+	{% if lastEntry_date != entry.entry_date %}
+		<h2>{{ entry.dotw }} &nbsp; {{ entry.print_date }}</h2>
+		<hr>
+	{% endif %}
+	{% if entry.struck == False %}
+		{% if entry.milTime == 0 %}
+			<div class="delBtn" style="display:none;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="buttons">{{entry.text}}</p>
+		{% else %}
+			<div class="delBtn" style="display:none;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="buttons">{{entry.print_time}} &nbsp; {{entry.text}}</p>
+		{% endif %}
+	{% else %}
+		{% if entry.milTime == 0 %}
+			<div class="delBtn" style="display:inline;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="strikeButn" style="">{{entry.text}}</p>
+		{% else %}
+			<div class="delBtn" style="display:inline;" title="{{ entry.key }}" id="delBtn{{ entry.key }}" ><img src="images/blue/remove20x20.png" class="delImg" /></div>
+			<p id="entry{{entry.key}}" title="{{entry.key}}" class="strikeButn" style="">{{entry.print_time}} &nbsp; {{entry.text}}</p>
+		{% endif %}
+	{% endif %}
+	<div id="br{{entry.key}}"></div>
+	{% set lastEntry_date = entry.entry_date %}
+{% endfor %}
+</div>
+</body>
+</html>

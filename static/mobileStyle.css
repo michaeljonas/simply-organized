@@ -1,0 +1,37 @@
+body			{ font-family: 'Georgia'; background:#9BA3AA; color:Black; margin: 0px;}
+h1				{ margin:0px; margin-bottom: 6px; font-size: 45px;}
+h2				{ color:#6991AA; width: 930px; margin:0px; font-size: 40px; }
+.today			{ color:#556270; display:inline;}
+.topMenu		{ top:0%; margin: 0px auto; width:900px;
+				border: 5px solid #B50D0D; padding: 12px; background-color:#F2FAFC }
+.topmargin		{ margin-top: 65px; }
+                  
+.buttons		{ background-color:#F2FAFC;text-align:left;
+					margin-left: 43px; display:inline; font-size: 44px;
+					color:Black; -webkit-appearance: none;}
+.strikeButn		{ background-color:#F2FAFC;text-align:left;
+					margin-left: 0px; display:inline; font-size: 44px;
+					text-decoration: line-through; color:Black; }
+.delButn		{ height:40px; vertical-align : bottom; margin-bottom:5px; }
+.addButn		{ vertical-align : bottom; margin-bottom:5px; }
+.delImg			{ vertical-align: top; display: inline; margin-top: 5px;}
+
+.toolBar		{ margin: 0px auto; background: #F2FAFC; width: 960px; }
+.aboutButn		{ display:inline; float: right; margin: 0px; margin-right:-15px; margin-top: -25px; }
+.pastButn		{ display:inline; margin: 0px; float: right; margin-right:-63px; margin-top: -25px; }
+.quickRefButn	{ display:inline; margin: 0px; float: right; margin-right:450px; margin-top: -100px;}
+
+.entryFields	{ margin-bottom: 6px; }
+.pastEntries	{ display:none; }
+.formatEntries	{ display:none; height: 275px; margin-top:50px;}
+
+hr				{ margin: 0px; color:#556270; }
+
+.dateEntry		{ font-size: 25px; margin-left: -250px;}
+.textField		{ font-size: 25px; }
+.addBtn			{ font-size: 25px; }
+
+.ERROR			{ background-color: #F2FAFC; margin-top:6px; margin-bottom:15px; color:#B50D0D; font-size: 25px;}
+
+.ui-datepicker-trigger	{ float: left; margin-top: 46px; margin-left:-43px;}
+div.ui-datepicker		{ font-size:50px; margin-left:40px; margin-top:80px;}
